@@ -40,6 +40,11 @@ function SignUp() {
                     <input type="text" name="name" className="form-control" value={formData.name} onChange={handleChange} />
                 </div>
                 <div className="form-group mb-3">
+                    <label>Date of Birth</label>
+                    <input type="date" name="dateOfBirth" className="form-control" value={formData.dateOfBirth} onChange={handleChange} />
+                </div>
+
+                <div className="form-group mb-3">
                     <label>Email:</label>
                     <input type="email" name="email" className="form-control" value={formData.email} onChange={handleChange} />
                 </div>

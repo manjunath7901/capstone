@@ -6,4 +6,5 @@ from typing import List,Dict
 class UserData(BaseModel):
     name: str
     email: str
-    password:str    
+    password:str
+    dob:str = "None"    
