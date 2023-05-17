@@ -3,7 +3,7 @@ import Login from "../pages/Login/Login";
 import SignUp from "../pages/Login/SignUp";
 import Home from "../pages/Home/Home";
 import UploadFile from "../pages/FileStorage/UploadFile";
-
+import FileList from "../pages/FileStorage/FileList";
 function PageRoutes() {
     return (
         <Router>
@@ -12,6 +12,7 @@ function PageRoutes() {
                 <Route path="/" element={<Login />} />
                 <Route path="/home" element={<Home />} />
                 <Route path="/file" element={<UploadFile />} />
+                <Route path="/listfiles" element={<FileList />} />
             </Routes>
         </Router>
     );

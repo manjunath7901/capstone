@@ -8,4 +8,3 @@ class UserData(BaseModel):
     email: str
     password:str
     dob:str = "None"    
-
