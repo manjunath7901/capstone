@@ -5,3 +5,4 @@ client = motor.motor_asyncio.AsyncIOMotorClient(
 
 database = client.capstone
 collection1 = database.userdata
+collection2 = database.uploadfile
