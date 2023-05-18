@@ -26,6 +26,12 @@ const Navbar = () => {
                         <a className="nav-link" href="/">
                             Login
                         </a>
+                        <a className="nav-link active" aria-current="page" href="/file">
+                            Upload File
+                        </a>
+                        <a className="nav-link" href="/listfiles">
+                            List File
+                        </a>
                         <a className="nav-link" href="/">
                             Logout
                         </a>
