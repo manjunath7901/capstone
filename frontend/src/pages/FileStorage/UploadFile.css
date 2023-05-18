@@ -1,0 +1,21 @@
+/* UploadFile.css */
+
+.dropzone-container {
+    border: 2px dashed #ddd;
+    padding: 20px;
+    background-color: #f9f9f9;
+    text-align: center;
+    cursor: pointer;
+}
+
+.dropzone-input {
+    display: none;
+}
+
+.dropzone-message {
+    margin-top: 10px;
+}
+
+.upload-button {
+    margin-top: 10px;
+}

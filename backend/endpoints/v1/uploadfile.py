@@ -52,20 +52,27 @@
 from config.mongodb_conn import collection2
 from fastapi import APIRouter, HTTPException,UploadFile,File
 from bson import ObjectId
+from typing import List
+from fastapi import Form
+import json
 
 router = APIRouter()
 
-@router.post("/upload")
-async def upload_file(file: UploadFile = File(...)):
-    content = await file.read()
 
+import json
+
+@router.post("/upload")
+async def upload_file(file: UploadFile = File(...), authorized_users: str = Form(...)):
+    content = await file.read()
+    authorized_users_array = json.loads(authorized_users)  # Parse the JSON string to a list
     file_dict = {
         "filename": file.filename,
-        "content": content.decode("utf-8")  # Assuming the file is text-based
+        "content": content.decode("utf-8"),  # Assuming the file is text-based
+        "authorized_users": authorized_users_array
     }
-
     result = await collection2.insert_one(file_dict)
     return {"file_id": str(result.inserted_id)}
+
 
 @router.get("/files")
 async def get_file_list():

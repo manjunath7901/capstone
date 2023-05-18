@@ -17,6 +17,11 @@ async def create_user(userdata: dict):
     return {"status":True}
 
 
+@router.get('/users')
+async def get_all_users():
+    users = await collection1.find({}, {'_id': 0, 'name': 1, 'email': 1}).to_list(length=None)
+    return users
+
 
 @router.post("/login")
 async def verify_login(request: Request):
