@@ -13,8 +13,15 @@ const FileList = () => {
 
     useEffect(() => {
         const getFileList = async () => {
+            let email = sessionStorage.getItem("email");
+            console.log(email)
             try {
-                const response = await axios.get("http://localhost:8000/api/v1/files");
+                const response = await axios.get("http://localhost:8000/api/v1/files", {
+                    params: {
+                        email: email,
+                    },
+
+                });
                 setFiles(response.data.files);
             } catch (error) {
                 console.error(error);

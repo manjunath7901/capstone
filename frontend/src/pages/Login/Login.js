@@ -21,7 +21,8 @@ function Login() {
             if (res.data.status == true) {
                 alert("Logged in successfully")
                 sessionStorage.setItem("name", res.data.name)
-                navigate('/home')
+                sessionStorage.setItem("email", res.data.email)
+                navigate('/files')
 
             }
             else {

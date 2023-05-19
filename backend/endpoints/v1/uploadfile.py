@@ -95,7 +95,7 @@
 #     return {"content": result["content"]}
 
 from config.mongodb_conn import collection2
-from fastapi import APIRouter, HTTPException, UploadFile, File
+from fastapi import APIRouter, HTTPException, UploadFile, File, Depends
 from bson import ObjectId
 from typing import List
 from fastapi import Form
@@ -104,8 +104,16 @@ from cryptography.fernet import Fernet
 
 router = APIRouter()
 
-# Generate a key for encryption and decryption
-key = Fernet.generate_key()
+# Load or generate the encryption key
+key_file = "encryption_key.txt"
+try:
+    with open(key_file, "rb") as file:
+        key = file.read()
+except FileNotFoundError:
+    key = Fernet.generate_key()
+    with open(key_file, "wb") as file:
+        file.write(key)
+
 cipher_suite = Fernet(key)
 
 def encrypt_content(content: str) -> bytes:
@@ -128,16 +136,20 @@ async def upload_file(file: UploadFile = File(...), authorized_users: str = Form
     return {"file_id": str(result.inserted_id)}
 
 @router.get("/files")
-async def get_file_list():
+async def get_file_list(email: str):
+    print(email)
     files = await collection2.find().to_list(length=None)
     serialized_files = []
     for file in files:
-        serialized_file = {
-            "filename": file["filename"],
-            "file_id": str(file["_id"])
-        }
-        serialized_files.append(serialized_file)
+        authorized_users = file["authorized_users"]
+        if email in authorized_users:
+            serialized_file = {
+                "filename": file["filename"],
+                "file_id": str(file["_id"])
+            }
+            serialized_files.append(serialized_file)
     return {"files": serialized_files}
+
 
 @router.get("/file/{file_id}")
 async def get_file(file_id: str):
