@@ -5,6 +5,7 @@ import Dropzone from "react-dropzone";
 import SelectUsers from "./OptionOutsideSelect";
 import "./UploadFile.css"; // Import custom CSS file
 import { useNavigate } from "react-router-dom";
+import Navbar from "../NavBar/NavBar";
 
 const UploadFile = () => {
     let navigate = useNavigate();
@@ -63,43 +64,46 @@ const UploadFile = () => {
 
     return (
         user &&
-        <Container>
-            <Row style={{ marginTop: "50px" }}>
-                <Col>
-                    <Dropzone onDrop={onFileSelect} accept=".txt">
-                        {({ getRootProps, getInputProps }) => (
-                            <div {...getRootProps()} className="dropzone-container">
-                                <input {...getInputProps()} className="dropzone-input" />
-                                <p className="dropzone-message">Drag and drop a text file here, or click to select a file</p>
-                            </div>
-                        )}
-                    </Dropzone>
-                </Col>
-            </Row>
-            <Row style={{ marginTop: "100px" }}>
-                <Col>
-                    <SelectUsers
+        <>
+            <Navbar />
+            <Container>
+                <Row style={{ marginTop: "50px" }}>
+                    <Col>
+                        <Dropzone onDrop={onFileSelect} accept=".txt">
+                            {({ getRootProps, getInputProps }) => (
+                                <div {...getRootProps()} className="dropzone-container">
+                                    <input {...getInputProps()} className="dropzone-input" />
+                                    <p className="dropzone-message">Drag and drop a text file here, or click to select a file</p>
+                                </div>
+                            )}
+                        </Dropzone>
+                    </Col>
+                </Row>
+                <Row style={{ marginTop: "100px" }}>
+                    <Col>
+                        <SelectUsers
 
-                        selectedUsers={selectedUsers}
-                        setSelectedUsers={setSelectedUsers}
+                            selectedUsers={selectedUsers}
+                            setSelectedUsers={setSelectedUsers}
 
-                    />
-                </Col>
-            </Row>
-            <Row>
-                <Col>
-                    <Button
-                        style={{ margin: "30px" }}
-                        variant="primary"
-                        onClick={onUpload}
-                        disabled={!selectedFile}
-                    >
-                        Upload
-                    </Button>
-                </Col>
-            </Row>
+                        />
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        <Button
+                            style={{ margin: "30px" }}
+                            variant="primary"
+                            onClick={onUpload}
+                            disabled={!selectedFile}
+                        >
+                            Upload
+                        </Button>
+                    </Col>
+                </Row>
 
-        </Container>
+            </Container>
+        </>
     );
 };
 

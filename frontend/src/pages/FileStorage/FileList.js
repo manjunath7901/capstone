@@ -5,6 +5,7 @@ import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import folderImage from "./folder.png";
 import { useNavigate } from "react-router-dom";
+import Navbar from "../NavBar/NavBar";
 
 const FileList = () => {
     const [files, setFiles] = useState([]);
@@ -58,38 +59,41 @@ const FileList = () => {
     };
 
     return (
-        <div>
-            <h1>File List:</h1>
+        user && <>
+            <Navbar />
+            <div>
+                <h1>File List:</h1>
 
-            <Row style={{ margin: '30px' }}>
-                {files.map((file, index) => (
-                    <Col key={file.file_id} md={6} lg={4}>
-                        <Card style={{ width: '10rem', marginBottom: '20px' }}>
-                            <Card.Img variant="top" src={folderImage} alt="" />
-                            <ListGroup.Item
-                                onClick={() => handleFileClick(file.file_id)}
-                                action
-                                active={selectedFile === file.file_id}
-                            >
-                                <i className="bi bi-file-text"></i> {file.filename}
-                            </ListGroup.Item>
-                        </Card>
-                    </Col>
-                ))}
-            </Row>
+                <Row style={{ margin: '30px' }}>
+                    {files.map((file, index) => (
+                        <Col key={file.file_id} md={6} lg={4}>
+                            <Card style={{ width: '10rem', marginBottom: '20px' }}>
+                                <Card.Img variant="top" src={folderImage} alt="" />
+                                <ListGroup.Item
+                                    onClick={() => handleFileClick(file.file_id)}
+                                    action
+                                    active={selectedFile === file.file_id}
+                                >
+                                    <i className="bi bi-file-text"></i> {file.filename}
+                                </ListGroup.Item>
+                            </Card>
+                        </Col>
+                    ))}
+                </Row>
 
-            <Modal show={showModal} onHide={handleCloseModal} centered>
-                <Modal.Header closeButton>
-                    <Modal.Title>File Content</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>{fileContent}</Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={handleCloseModal}>
-                        Close
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-        </div>
+                <Modal show={showModal} onHide={handleCloseModal} centered>
+                    <Modal.Header closeButton>
+                        <Modal.Title>File Content</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>{fileContent}</Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={handleCloseModal}>
+                            Close
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+            </div>
+        </>
     );
 };
 
