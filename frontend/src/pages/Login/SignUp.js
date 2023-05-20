@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import NavBarOutSide from '../NavBar/NavBarOutSide';
+import { Link } from 'react-router-dom';
 
 function SignUp() {
     let navigate = useNavigate();
@@ -56,6 +57,9 @@ function SignUp() {
                         <input type="date" name="dateOfBirth" className="form-control" value={formData.dateOfBirth} onChange={handleChange} />
                     </div>
                     <button type="submit" className="btn btn-primary">SignUp </button>
+                    <div className="text-center mt-3">
+                        Already have account? <Link to="/">Login</Link>
+                    </div>
 
                 </form>
             </div>

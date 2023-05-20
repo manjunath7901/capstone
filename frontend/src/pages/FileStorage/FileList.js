@@ -66,7 +66,7 @@ const FileList = () => {
 
                 <Row style={{ margin: '30px' }}>
                     {files.map((file, index) => (
-                        <Col key={file.file_id} md={6} lg={4}>
+                        <Col key={file.file_id} md={6} lg={2}>
                             <Card style={{ width: '10rem', marginBottom: '20px' }}>
                                 <Card.Img variant="top" src={folderImage} alt="" />
                                 <ListGroup.Item
