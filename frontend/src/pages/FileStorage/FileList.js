@@ -4,12 +4,21 @@ import { ListGroup, Modal, Row, Col } from "react-bootstrap";
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import folderImage from "./folder.png";
+import { useNavigate } from "react-router-dom";
 
 const FileList = () => {
     const [files, setFiles] = useState([]);
     const [selectedFile, setSelectedFile] = useState("");
     const [fileContent, setFileContent] = useState("");
     const [showModal, setShowModal] = useState(false);
+    let navigate = useNavigate()
+    const user = sessionStorage.getItem("email") !== null;
+
+    useEffect(() => {
+        if (!user) {
+            navigate('/');
+        }
+    }, []);
 
     useEffect(() => {
         const getFileList = async () => {

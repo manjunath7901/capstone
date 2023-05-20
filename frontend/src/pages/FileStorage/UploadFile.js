@@ -4,8 +4,17 @@ import { Container, Row, Col, Button } from "react-bootstrap";
 import Dropzone from "react-dropzone";
 import SelectUsers from "./OptionOutsideSelect";
 import "./UploadFile.css"; // Import custom CSS file
+import { useNavigate } from "react-router-dom";
 
 const UploadFile = () => {
+    let navigate = useNavigate();
+    const user = sessionStorage.getItem("email") !== null;
+
+    useEffect(() => {
+        if (!user) {
+            navigate('/');
+        }
+    }, []);
     const [selectedFile, setSelectedFile] = useState(null);
     const [selectedUsers, setSelectedUsers] = useState([]);
     const [formData, setFormData] = useState(new FormData());
@@ -15,8 +24,8 @@ const UploadFile = () => {
     };
 
     useEffect(() => {
-        const emailAddresses = selectedUsers.map((user) => user.value);
-        formData.set("authorized_users", JSON.stringify(emailAddresses));
+        const user_id = selectedUsers.map((user) => user.value);
+        formData.set("authorized_users", JSON.stringify(user_id));
     }, [selectedUsers]);
 
     const onUpload = async () => {
@@ -53,6 +62,7 @@ const UploadFile = () => {
     };
 
     return (
+        user &&
         <Container>
             <Row style={{ marginTop: "50px" }}>
                 <Col>

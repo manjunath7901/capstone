@@ -94,13 +94,14 @@
 #         raise HTTPException(status_code=404, detail="File not found")
 #     return {"content": result["content"]}
 
-from config.mongodb_conn import collection2
+from config.mongodb_conn import collection2,collection1
 from fastapi import APIRouter, HTTPException, UploadFile, File, Depends
 from bson import ObjectId
 from typing import List
-from fastapi import Form
+from fastapi import Form,Request
 import json
 from cryptography.fernet import Fernet
+
 
 router = APIRouter()
 
@@ -137,12 +138,14 @@ async def upload_file(file: UploadFile = File(...), authorized_users: str = Form
 
 @router.get("/files")
 async def get_file_list(email: str):
-    print(email)
+    
+    user = await collection1.find_one({"email": email})
+    user_id = str(user["_id"]) if user else None
     files = await collection2.find().to_list(length=None)
     serialized_files = []
     for file in files:
         authorized_users = file["authorized_users"]
-        if email in authorized_users:
+        if user_id in authorized_users:
             serialized_file = {
                 "filename": file["filename"],
                 "file_id": str(file["_id"])
@@ -158,3 +161,13 @@ async def get_file(file_id: str):
         raise HTTPException(status_code=404, detail="File not found")
     decrypted_content = decrypt_content(result["content"])
     return {"content": decrypted_content}
+
+
+@router.get('/get_id')
+async def get_id_by_email(email:str):
+    print(email)
+    user = await collection1.find_one({"email": email})
+    user_id = str(user["_id"]) if user else None
+    return {"user_id": user_id}
+    
+    

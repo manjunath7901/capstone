@@ -5,6 +5,7 @@ import Home from "../pages/Home/Home";
 import UploadFile from "../pages/FileStorage/UploadFile";
 import FileList from "../pages/FileStorage/FileList";
 import SelectUsers from "../pages/FileStorage/OptionOutsideSelect";
+import LogOut from "../pages/Login/LogOut";
 function PageRoutes() {
     return (
         <Router>
@@ -15,6 +16,7 @@ function PageRoutes() {
                 <Route path="/file" element={<UploadFile />} />
                 <Route path="/listfiles" element={<FileList />} />
                 <Route path="/user" element={<SelectUsers />} />
+                <Route path="/logout" element={<LogOut />} />
 
             </Routes>
         </Router>

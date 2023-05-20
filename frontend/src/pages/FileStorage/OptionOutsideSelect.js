@@ -94,7 +94,7 @@ const OptionsOutsideSelect = (props) => {
 
   let navigate = useNavigate();
 
-  console.log(value)
+  console.log(options)
   setSelectedUsers(value)
 
 
@@ -104,7 +104,7 @@ const OptionsOutsideSelect = (props) => {
     onChange(value.filter((val) => val.value !== removedValue.value));
   };
   const selectOptions = options.map((user) => ({
-    value: user.email,
+    value: user._id,
     label: user.name,
   }));
 

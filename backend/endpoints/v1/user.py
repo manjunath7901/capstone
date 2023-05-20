@@ -19,7 +19,9 @@ async def create_user(userdata: dict):
 
 @router.get('/users')
 async def get_all_users():
-    users = await collection1.find({}, {'_id': 0, 'name': 1, 'email': 1}).to_list(length=None)
+    users = await collection1.find({}, {'name': 1, 'email': 1}).to_list(length=None)
+    for user in users:
+        user['_id'] = str(user['_id'])
     return users
 
 

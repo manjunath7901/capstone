@@ -4,8 +4,8 @@ const Navbar = () => {
     return (
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
             <div className="container-fluid">
-                <a className="navbar-brand" href="#">
-                    Navbar
+                <a className="navbar-brand">
+                    CAM
                 </a>
                 <button
                     className="navbar-toggler"
@@ -23,16 +23,13 @@ const Navbar = () => {
                         <a className="nav-link active" aria-current="page" href="/signup">
                             SignUp
                         </a>
-                        <a className="nav-link" href="/">
-                            Login
-                        </a>
                         <a className="nav-link active" aria-current="page" href="/file">
                             Upload File
                         </a>
                         <a className="nav-link" href="/listfiles">
                             List File
                         </a>
-                        <a className="nav-link" href="/">
+                        <a className="nav-link" href="/logout">
                             Logout
                         </a>
 

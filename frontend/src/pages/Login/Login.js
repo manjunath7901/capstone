@@ -1,9 +1,17 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 function Login() {
+    const user = sessionStorage.getItem("email") !== null;
     let navigate = useNavigate();
+    useEffect(() => {
+        if (user) {
+            navigate('/');
+        }
+    }, []);
+
     const [formData, setFormData] = useState({ email: '', password: '' });
 
     const handleChange = event => {
@@ -22,7 +30,7 @@ function Login() {
                 alert("Logged in successfully")
                 sessionStorage.setItem("name", res.data.name)
                 sessionStorage.setItem("email", res.data.email)
-                navigate('/files')
+                navigate('/file')
 
             }
             else {
@@ -33,6 +41,7 @@ function Login() {
     };
 
     return (
+        !user &&
         <div className="container d-flex justify-content-center align-items-center vh-100">
             <form className="p-5 shadow-lg rounded" onSubmit={handleSubmit}>
                 <h2 className="text-center mb-4">Login</h2>
