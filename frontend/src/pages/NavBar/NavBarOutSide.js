@@ -1,6 +1,6 @@
 import React from "react";
 
-const Navbar = () => {
+const NavBarOutSide = () => {
     return (
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
             <div className="container-fluid">
@@ -18,23 +18,10 @@ const Navbar = () => {
                 >
                     <span className="navbar-toggler-icon"></span>
                 </button>
-                <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
-                    <div className="navbar-nav">
-                        <a className="nav-link active" aria-current="page" href="/file">
-                            Upload File
-                        </a>
-                        <a className="nav-link" href="/listfiles">
-                            List File
-                        </a>
-                        <a className="nav-link" href="/logout">
-                            Logout
-                        </a>
 
-                    </div>
-                </div>
             </div>
         </nav>
     );
 };
 
-export default Navbar;
+export default NavBarOutSide;
