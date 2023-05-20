@@ -67,7 +67,7 @@ const UploadFile = () => {
         <>
             <Navbar />
             <Container>
-                <Row style={{ marginTop: "50px" }}>
+                <Row style={{ marginTop: "20vh" }}>
                     <Col>
                         <Dropzone onDrop={onFileSelect} accept=".txt">
                             {({ getRootProps, getInputProps }) => (

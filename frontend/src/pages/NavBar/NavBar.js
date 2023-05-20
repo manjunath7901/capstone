@@ -2,11 +2,9 @@ import React from "react";
 
 const Navbar = () => {
     return (
-        <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+        <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
             <div className="container-fluid">
-                <a className="navbar-brand">
-                    CAM
-                </a>
+                <a className="navbar-brand">CAM</a>
                 <button
                     className="navbar-toggler"
                     type="button"
@@ -29,7 +27,6 @@ const Navbar = () => {
                         <a className="nav-link" href="/logout">
                             Logout
                         </a>
-
                     </div>
                 </div>
             </div>

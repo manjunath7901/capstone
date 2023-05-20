@@ -37,6 +37,7 @@ function SignUp() {
     return (
         <>
             <NavBarOutSide />
+
             <div className="container d-flex justify-content-center align-items-center vh-100" >
                 <form className="p-5 shadow-lg rounded" onSubmit={handleSubmit} >
                     <h2 className="text-center mb-3" >Sign Up</h2>
@@ -56,12 +57,14 @@ function SignUp() {
                         <label>Date of Birth</label>
                         <input type="date" name="dateOfBirth" className="form-control" value={formData.dateOfBirth} onChange={handleChange} />
                     </div>
+
                     <button type="submit" className="btn btn-primary">SignUp </button>
                     <div className="text-center mt-3">
                         Already have account? <Link to="/">Login</Link>
                     </div>
 
                 </form>
+
             </div>
         </>
     );
