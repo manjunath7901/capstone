@@ -4,6 +4,7 @@ from config.mongodb_conn import collection1
 from services.userdata import create_userdata,fetch_one_userdata
 from pymongo.errors import DuplicateKeyError
 from typing import Dict
+import requests
 
 router = APIRouter()
 
@@ -16,7 +17,6 @@ async def create_user(userdata: dict):
     result = await collection1.insert_one(user_dict)
     return {"status":True}
 
-
 @router.get('/users')
 async def get_all_users():
     users = await collection1.find({}, {'name': 1, 'email': 1}).to_list(length=None)
@@ -24,13 +24,17 @@ async def get_all_users():
         user['_id'] = str(user['_id'])
     return users
 
-
 @router.post("/login")
 async def verify_login(request: Request):
     request = await request.json()
     details = await fetch_one_userdata(request['email'])
     if details:
         if request['password'] == details['password']:
+            logged_user_id = str(details["_id"])+"+"+details["dob"]
+            
+            with open('E:/manjunathcode/capstone/backend/endpoints/v1/signature_data.txt', 'wb') as f:
+                f.write(logged_user_id.encode("utf-8"))
+
             return {"email": details['email'], "status": True, "name": details['name']}
         else:
             return {"status": False}
