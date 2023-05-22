@@ -101,6 +101,9 @@ from typing import List
 from fastapi import Form,Request
 import json
 from cryptography.fernet import Fernet
+import requests
+from endpoints.v1.signature_encryption import encrypt_signature
+import base64
 
 
 router = APIRouter()
@@ -127,39 +130,80 @@ def decrypt_content(content: bytes) -> str:
 async def upload_file(file: UploadFile = File(...), authorized_users: str = Form(...)):
     content = await file.read()
     encrypted_content = encrypt_content(content.decode("utf-8"))
+    encrypted_content = base64.b64encode(encrypted_content).decode('utf-8')  # Encode bytes to Base64
     authorized_users_array = json.loads(authorized_users)  # Parse the JSON string to a list
-    file_dict = {
-        "filename": file.filename,
-        "content": encrypted_content,
-        "authorized_users": authorized_users_array
-    }
-    result = await collection2.insert_one(file_dict)
-    return {"file_id": str(result.inserted_id)}
+
+    url = "http://23.21.228.145:80/upload"
+    with open("E:/manjunathcode/capstone/backend/endpoints/v1/signature_data.txt", "rb") as f:
+        logged_user_id = f.read()
+        print(logged_user_id)
+        logged_user_id = logged_user_id.decode("utf-8")
+
+
+    signature = encrypt_signature(logged_user_id)
+    print(signature)
+    header = {"Content-Type": "application/json","Signature": signature}
+    data = {"filename": file.filename, "content": encrypted_content, "authorized_users": authorized_users_array}
+
+    response = requests.post(url, headers=header, json=data)
+
+    if response.status_code == 200:
+        cloud_response = response.json()
+        print(response.json())
+    else:
+        return {"error": "no response form server2"}
+    
+    print(response)
+    return {"file_id": str(cloud_response["file_id"])}
 
 @router.get("/files")
 async def get_file_list(email: str):
-    
-    user = await collection1.find_one({"email": email})
-    user_id = str(user["_id"]) if user else None
-    files = await collection2.find().to_list(length=None)
-    serialized_files = []
-    for file in files:
-        authorized_users = file["authorized_users"]
-        if user_id in authorized_users:
-            serialized_file = {
-                "filename": file["filename"],
-                "file_id": str(file["_id"])
-            }
-            serialized_files.append(serialized_file)
+    # user = await collection1.find_one({"email": email})
+    # user_id = str(user["_id"]) if user else None
+
+    url = "http://23.21.228.145:80/getfiles"
+    with open("E:/manjunathcode/capstone/backend/endpoints/v1/signature_data.txt", "rb") as f:
+        logged_user_id = f.read()
+        print(logged_user_id)
+        logged_user_id = logged_user_id.decode("utf-8")
+
+    signature = encrypt_signature(logged_user_id)
+    header = {"Content-Type": "application/json","Signature": signature}
+
+    response = requests.post(url, headers=header)
+
+    if response.status_code == 200:
+        cloud_response = response.json()
+        print(response.json())
+        serialized_files =cloud_response["files"]
+    else:
+        return {"error": "no response form server2"}
+
+
     return {"files": serialized_files}
 
 
 @router.get("/file/{file_id}")
 async def get_file(file_id: str):
-    result = await collection2.find_one({"_id": ObjectId(file_id)})
-    if result is None:
-        raise HTTPException(status_code=404, detail="File not found")
-    decrypted_content = decrypt_content(result["content"])
+
+    url = "http://23.21.228.145:80/getfile"
+    with open("E:/manjunathcode/capstone/backend/endpoints/v1/signature_data.txt", "rb") as f:
+        logged_user_id = f.read()
+        print(logged_user_id)
+        logged_user_id = logged_user_id.decode("utf-8")
+
+    signature = encrypt_signature(logged_user_id+'+'+file_id)
+    header = {"Content-Type": "application/json","Signature": signature}
+
+    response = requests.post(url, headers=header)
+
+    if response.status_code == 200:
+        cloud_response = response.json()
+        print(response.json())
+    else:
+        return {"error": "no response form server2"}
+
+    decrypted_content = decrypt_content(base64.b64decode(cloud_response["content"]))
     return {"content": decrypted_content}
 
 
