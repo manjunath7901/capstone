@@ -1,43 +1,83 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import NavBarOutSide from '../NavBar/NavBarOutSide';
 import { Link } from 'react-router-dom';
-import ImageUploader from './ImageUploader';
+import Webcam from 'react-webcam';
 
 function SignUp() {
-  let navigate = useNavigate();
-  const [formData, setFormData] = useState({ name: '', email: '', password: '' });
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    dob: '',
+    file: null,
+  });
+  const webcamRef = useRef(null);
+  const [uploadedImage, setUploadedImage] = useState(null);
+  const [showCamera, setShowCamera] = useState(false);
 
   const handleChange = event => {
     setFormData({ ...formData, [event.target.name]: event.target.value });
   };
 
+  const handleOpenCamera = () => {
+    setUploadedImage(null);
+    setShowCamera(true);
+  };
+
+  const handleCapture = async () => {
+    const imageSrc = webcamRef.current.getScreenshot();
+    setUploadedImage(imageSrc);
+    setShowCamera(false);
+
+    const blob = await fetch(imageSrc).then(r => r.blob());
+    const file = new File([blob], 'captured-image.jpeg', { type: 'image/jpeg' });
+
+    setFormData(prevData => ({ ...prevData, file }));
+  };
+
   const handleSubmit = async event => {
     event.preventDefault();
 
-    axios.post('http://localhost:8001/api/v1/adduser', {
-      name: formData.name,
-      email: formData.email,
-      password: formData.password,
-      dob: formData.dateOfBirth
-    }).then((res) => {
+    const formdata = new FormData();
+    formdata.append('name', formData.name);
+    formdata.append('email', formData.email);
+    formdata.append('password', formData.password);
+    formdata.append('dob', formData.dob);
+    formdata.append('file', formData.file);
 
-      if (res.data.status === true) {
-        alert("Created");
-        navigate('/');
-      } else {
-        alert('User with email already exists');
-      }
-    });
-    console.log(formData);
+    try {
+      const response = await axios.post(
+        'http://localhost:8001/api/v1/adduser',
+        formdata,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      ).then((res)=>{
+        if(res.data.status===true){
+            alert("successfull sign up")
+            navigate('/');
+        }else{
+            alert("user already exist")
+        }
+        
+      });
+
+    //   console.log('User created. Image ID:', response.data.status);
+    } catch (error) {
+      console.error('Error creating user:', error);
+    }
   };
 
   return (
     <>
       <NavBarOutSide />
-      <div className="container d-flex justify-content-center align-items-center "  style={{marginTop:"100px"}}>
-        <div className="scrollable-form-container" >
+      <div className="container d-flex justify-content-center align-items-center" style={{ marginTop: '100px' }}>
+        <div className="scrollable-form-container">
           <form className="p-5 shadow-lg rounded" onSubmit={handleSubmit}>
             <h2 className="text-center mb-3">Sign Up</h2>
             <div className="form-group mb-2">
@@ -50,15 +90,39 @@ function SignUp() {
             </div>
             <div className="form-group mb-2">
               <label>Password:</label>
-              <input type="password" name="password" className="form-control" value={formData.password} onChange={handleChange} />
+              <input
+                type="password"
+                name="password"
+                className="form-control"
+                value={formData.password}
+                onChange={handleChange}
+              />
             </div>
             <div className="form-group mb-3">
               <label>Date of Birth</label>
-              <input type="date" name="dateOfBirth" className="form-control" value={formData.dateOfBirth} onChange={handleChange} />
+              <input
+                type="date"
+                name="dob"
+                className="form-control"
+                value={formData.dob}
+                onChange={handleChange}
+              />
             </div>
-            
-            <ImageUploader  formData={formData} setFormData={setFormData}/>
-            <button type="submit" className="btn btn-primary">Sign Up</button>
+
+            <div>
+              <h5>Image Uploader</h5>
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+              {showCamera && <Webcam audio={false} ref={webcamRef} screenshotFormat="image/jpeg" />}
+              {showCamera && <button onClick={handleCapture} className="btn btn-primary">Capture Image</button>}
+              {!showCamera && <button onClick={handleOpenCamera} className="btn btn-primary">Open Camera</button>}
+            </div></div>
+            {uploadedImage && (
+              <div>
+                <h5>captured Image</h5>
+                <img src={uploadedImage} alt="Uploaded" />
+              </div>
+            )}
+            <button type="submit" className="btn btn-primary" style={{ marginTop: '10px'}}>Sign Up</button>
             <div className="text-center mt-3">
               Already have an account? <Link to="/">Login</Link>
             </div>
