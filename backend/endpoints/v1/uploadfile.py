@@ -1,4 +1,3 @@
-
 # # from config.mongodb_conn import collection2
 # # from fastapi import APIRouter,HTTPException,Request, UploadFile,File
 # # from bson import ObjectId
@@ -104,7 +103,8 @@ from cryptography.fernet import Fernet
 import requests
 from endpoints.v1.signature_encryption import encrypt_signature
 import base64
-
+from tkinter import Tk
+from tkinter.filedialog import askdirectory
 
 router = APIRouter()
 
@@ -205,6 +205,66 @@ async def get_file(file_id: str):
 
     decrypted_content = decrypt_content(base64.b64decode(cloud_response["content"]))
     return {"content": decrypted_content}
+
+@router.delete("/delete/{file_id}")
+async def delete_file(file_id: str):
+    print("ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd")
+    url = "http://23.21.228.145:80/delete"
+    with open("E:/manjunathcode/capstone/backend/endpoints/v1/signature_data.txt", "rb") as f:
+        logged_user_id = f.read()
+        print(logged_user_id)
+        logged_user_id = logged_user_id.decode("utf-8")
+
+    signature = encrypt_signature(logged_user_id+'+'+file_id)
+    header = {"Content-Type": "application/json","Signature": signature}
+
+    response = requests.post(url, headers=header)
+
+    if response.status_code == 200:
+        cloud_response = response.json()
+        print(response.json())
+    else:
+        return {"error": "no response form server2"}
+
+    return {"message": cloud_response["status"]}
+
+# @router.get("/download/{file_id}")
+# async def download_file(file_id: str):
+
+#     url = "http://23.21.228.145:80/getfile"
+#     with open("E:/manjunathcode/capstone/backend/endpoints/v1/signature_data.txt", "rb") as f:
+#         logged_user_id = f.read()
+#         print(logged_user_id)
+#         logged_user_id = logged_user_id.decode("utf-8")
+
+#     signature = encrypt_signature(logged_user_id+'+'+file_id)
+#     header = {"Content-Type": "application/json","Signature": signature}
+
+#     response = requests.post(url, headers=header)
+#     print("ssssssssssssssssssssssssssssssssssssssssssssss")
+#     if response.status_code == 200:
+#         cloud_response = response.json()
+#         print(response.json())
+#     else:
+#         return {"error": "no response form server2"}
+
+#     decrypted_content = decrypt_content(base64.b64decode(cloud_response["content"]))
+#     # Create a Tkinter root window
+#     root = Tk()
+#     root.withdraw()
+#     # Prompt the user to select a directory
+#     selected_directory = askdirectory(title="Select Destination Folder")
+#     # If the user cancels the folder selection, exit the program
+#     if not selected_directory:
+#         exit()
+#     # Create the destination path
+#     destination = selected_directory + "/"+cloud_response["filename"]
+#     # Download the file
+#     with open(destination, "wb") as file:
+#         file.write(decrypted_content.encode("utf-8"))
+
+
+#     return {"status": "downloaded"}
 
 
 @router.get('/get_id')

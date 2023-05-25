@@ -23,7 +23,7 @@ function Login() {
     const handleSubmit = async event => {
         event.preventDefault();
 
-        axios.post('http://localhost:8000/api/v1/login', {
+        axios.post('http://localhost:8001/api/v1/login', {
             email: formData.email,
             password: formData.password
         }).then((res) => {

@@ -14,7 +14,7 @@ def encrypt_signature(data, public_key_path="E:/manjunathcode/capstone/backend/e
             key_file.read(),
             backend=default_backend()
         )
-    
+
     encrypted_data = public_key.encrypt(
         data.encode("utf-8"),
         padding.OAEP(

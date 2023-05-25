@@ -57,7 +57,7 @@ const SelectUsers = (props) => {
   const [users_data, setusers_data] = useState();
 
   useEffect(() => {
-    axios.get("http://localhost:8000/api/v1/users").then((res) => {
+    axios.get("http://localhost:8001/api/v1/users").then((res) => {
       setusers_data(res.data);
       console.log(users_data)
     })

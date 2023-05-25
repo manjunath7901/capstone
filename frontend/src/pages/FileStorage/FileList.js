@@ -3,98 +3,164 @@ import axios from "axios";
 import { ListGroup, Modal, Row, Col } from "react-bootstrap";
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
+import { Trash, Eye } from 'react-bootstrap-icons';
 import folderImage from "./folder.png";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../NavBar/NavBar";
 
+
 const FileList = () => {
-    const [files, setFiles] = useState([]);
-    const [selectedFile, setSelectedFile] = useState("");
-    const [fileContent, setFileContent] = useState("");
-    const [showModal, setShowModal] = useState(false);
-    let navigate = useNavigate()
-    const user = sessionStorage.getItem("email") !== null;
+  const [files, setFiles] = useState([]);
+  const [selectedFile, setSelectedFile] = useState("");
+  const [fileContent, setFileContent] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  let navigate = useNavigate();
+  const user = sessionStorage.getItem("email") !== null;
 
-    useEffect(() => {
-        if (!user) {
-            navigate('/');
-        }
-    }, []);
+  useEffect(() => {
+    if (!user) {
+      navigate('/');
+    }
+  }, []);
 
-    useEffect(() => {
-        const getFileList = async () => {
-            let email = sessionStorage.getItem("email");
-            console.log(email)
-            try {
-                const response = await axios.get("http://localhost:8000/api/v1/files", {
-                    params: {
-                        email: email,
-                    },
-
-                });
-                setFiles(response.data.files);
-            } catch (error) {
-                console.error(error);
-            }
-        };
-
-        getFileList();
-    }, []);
-
-    const handleFileClick = async (fileId) => {
-        try {
-            const response = await axios.get(`http://localhost:8000/api/v1/file/${fileId}`);
-            setSelectedFile(fileId);
-            setFileContent(response.data.content);
-            setShowModal(true);
-        } catch (error) {
-            console.error(error);
-        }
+  useEffect(() => {
+    const getFileList = async () => {
+      let email = sessionStorage.getItem("email");
+      console.log(email)
+      try {
+        const response = await axios.get("http://localhost:8001/api/v1/files", {
+          params: {
+            email: email,
+          },
+        });
+        setFiles(response.data.files);
+      } catch (error) {
+        console.error(error);
+      }
     };
 
-    const handleCloseModal = () => {
+    getFileList();
+  }, []);
+
+  const handleFileClick = async (fileId) => {
+    try {
+      const response = await axios.get(`http://localhost:8001/api/v1/file/${fileId}`);
+      setSelectedFile(fileId);
+      setFileContent(response.data.content);
+      setShowModal(true);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleDeleteFile = async (fileId) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this file?");
+  
+    if (confirmDelete) {
+      try {
+        await axios.delete(`http://localhost:8001/api/v1/delete/${fileId}`);
+        const updatedFiles = files.filter((file) => file.file_id !== fileId);
+        setFiles(updatedFiles);
         setSelectedFile("");
         setFileContent("");
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
+  
+
+  const handleDownload= async(fileId) => {
+   
+    console.log(fileId)
+    // const response = await axios.get(`http://localhost:8001/api/v1/download/${fileId}`);
+    // if(response.data.status==="downloaded")
+    // {
+    //     alert("download started")
+    // }else{
+        
+    //     alert("download failed")
+    // }
+    setSelectedFile("");
+        setFileContent("");
         setShowModal(false);
-    };
+    
 
-    return (
-        user && <>
-            <Navbar />
-            <div>
-                <h1>File List:</h1>
+  };
+const handleClose =()=>{
+    setSelectedFile("");
+    setFileContent("");
+    setShowModal(false);
 
-                <Row style={{ margin: '30px' }}>
-                    {files.map((file, index) => (
-                        <Col key={file.file_id} md={6} lg={2}>
-                            <Card style={{ width: '10rem', marginBottom: '20px' }}>
-                                <Card.Img variant="top" src={folderImage} alt="" />
-                                <ListGroup.Item
-                                    onClick={() => handleFileClick(file.file_id)}
-                                    action
-                                    active={selectedFile === file.file_id}
-                                >
-                                    <i className="bi bi-file-text"></i> {file.filename}
-                                </ListGroup.Item>
-                            </Card>
-                        </Col>
-                    ))}
-                </Row>
-
-                <Modal show={showModal} onHide={handleCloseModal} centered>
-                    <Modal.Header closeButton>
-                        <Modal.Title>File Content</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>{fileContent}</Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="secondary" onClick={handleCloseModal}>
-                            Close
+    
+}
+  return (
+    <>
+      {user && (
+        <>
+          <Navbar />
+          <div>
+            <h1>File List:</h1>
+  
+            <Row style={{ margin: '30px' }}>
+              {files.map((file, index) => (
+                <Col key={file.file_id} md={8} lg={3}>
+                    
+                  <Card style={{ width: '10rem', marginBottom: '20px' }}>
+                  <Card.Title>{file.filename}</Card.Title>
+                    <Card.Img variant="top" src={folderImage} alt="" style={{marginTop:'5px'}} />
+                    <ListGroup.Item
+                    style={{margin:"5px"}}
+                    //   onClick={() => handleFileClick(file.file_id)}
+                    //   action
+                    //   active={selectedFile === file.file_id}
+                    >
+                      <Row className="align-items-center">
+                        <Col>
+                         
+                        <Button
+                        variant="link"
+                        size="sm"
+                        onClick={() => handleFileClick(file.file_id)}
+                        className="text-decoration-none border-0 p-0"
+                        >
+                        <Eye color="black" size={30} className="border border-dark rounded" style={{padding:'3px'}} />
                         </Button>
-                    </Modal.Footer>
-                </Modal>
-            </div>
-        </>
-    );
-};
 
+                        </Col>
+                        <Col>
+                          <Button
+                            variant="outline-danger"
+                            secondary
+                            size="sm"
+                            onClick={() => handleDeleteFile(file.file_id)}
+                          >
+                            <Trash />
+                          </Button>
+                        </Col>
+                      </Row>
+                    </ListGroup.Item>
+                  </Card>
+                </Col>
+              ))}
+            </Row>
+  
+            <Modal show={showModal} onHide={handleClose} centered>
+            <Modal.Header closeButton>
+                <Modal.Title>File Content</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>{fileContent}</Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={() => handleDownload(selectedFile)}>
+                Download
+                </Button>
+            </Modal.Footer>
+            </Modal>
+          </div>
+        </>
+      )}
+    </>
+  );
+  
+              }
 export default FileList;

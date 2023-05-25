@@ -2,11 +2,9 @@ import React from "react";
 
 const NavBarOutSide = () => {
     return (
-        <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+        <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
             <div className="container-fluid">
-                <a className="navbar-brand">
-                    CAM
-                </a>
+                <a className="navbar-brand">CAM</a>
                 <button
                     className="navbar-toggler"
                     type="button"
@@ -18,7 +16,6 @@ const NavBarOutSide = () => {
                 >
                     <span className="navbar-toggler-icon"></span>
                 </button>
-
             </div>
         </nav>
     );
