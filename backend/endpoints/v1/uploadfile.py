@@ -97,7 +97,7 @@ from config.mongodb_conn import collection2,collection1
 from fastapi import APIRouter, HTTPException, UploadFile, File, Depends
 from bson import ObjectId
 from typing import List
-from fastapi import Form,Request
+from fastapi import Form,Request, Response
 import json
 from cryptography.fernet import Fernet
 import requests
@@ -204,7 +204,7 @@ async def get_file(file_id: str):
         return {"error": "no response form server2"}
 
     decrypted_content = decrypt_content(base64.b64decode(cloud_response["content"]))
-    return {"content": decrypted_content}
+    return {"name": cloud_response["filename"],"content": decrypted_content}
 
 @router.delete("/delete/{file_id}")
 async def delete_file(file_id: str):
@@ -227,44 +227,6 @@ async def delete_file(file_id: str):
         return {"error": "no response form server2"}
 
     return {"message": cloud_response["status"]}
-
-# @router.get("/download/{file_id}")
-# async def download_file(file_id: str):
-
-#     url = "http://23.21.228.145:80/getfile"
-#     with open("E:/manjunathcode/capstone/backend/endpoints/v1/signature_data.txt", "rb") as f:
-#         logged_user_id = f.read()
-#         print(logged_user_id)
-#         logged_user_id = logged_user_id.decode("utf-8")
-
-#     signature = encrypt_signature(logged_user_id+'+'+file_id)
-#     header = {"Content-Type": "application/json","Signature": signature}
-
-#     response = requests.post(url, headers=header)
-#     print("ssssssssssssssssssssssssssssssssssssssssssssss")
-#     if response.status_code == 200:
-#         cloud_response = response.json()
-#         print(response.json())
-#     else:
-#         return {"error": "no response form server2"}
-
-#     decrypted_content = decrypt_content(base64.b64decode(cloud_response["content"]))
-#     # Create a Tkinter root window
-#     root = Tk()
-#     root.withdraw()
-#     # Prompt the user to select a directory
-#     selected_directory = askdirectory(title="Select Destination Folder")
-#     # If the user cancels the folder selection, exit the program
-#     if not selected_directory:
-#         exit()
-#     # Create the destination path
-#     destination = selected_directory + "/"+cloud_response["filename"]
-#     # Download the file
-#     with open(destination, "wb") as file:
-#         file.write(decrypted_content.encode("utf-8"))
-
-
-#     return {"status": "downloaded"}
 
 
 @router.get('/get_id')

@@ -14,6 +14,7 @@ const FileList = () => {
   const [selectedFile, setSelectedFile] = useState("");
   const [fileContent, setFileContent] = useState("");
   const [showModal, setShowModal] = useState(false);
+  const [selectedfname, setSelectedFname] = useState("");
   let navigate = useNavigate();
   const user = sessionStorage.getItem("email") !== null;
 
@@ -46,6 +47,7 @@ const FileList = () => {
     try {
       const response = await axios.get(`http://localhost:8001/api/v1/file/${fileId}`);
       setSelectedFile(fileId);
+      setSelectedFname(response.data.name);
       setFileContent(response.data.content);
       setShowModal(true);
     } catch (error) {
@@ -70,23 +72,30 @@ const FileList = () => {
   };
   
 
-  const handleDownload= async(fileId) => {
-   
-    console.log(fileId)
-    // const response = await axios.get(`http://localhost:8001/api/v1/download/${fileId}`);
-    // if(response.data.status==="downloaded")
-    // {
-    //     alert("download started")
-    // }else{
-        
-    //     alert("download failed")
-    // }
-    setSelectedFile("");
-        setFileContent("");
-        setShowModal(false);
-    
-
+  const handleDownload = async (fileId) => {
+    if (!selectedfname || !fileContent) {
+      alert('No file selected');
+      return;
+    }
+  
+    const blob = new Blob([fileContent], { type: 'application/octet-stream' });
+    const url = window.URL.createObjectURL(blob);
+    const filename = selectedfname;
+  
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    link.click();
+    window.URL.revokeObjectURL(url);
+    alert('Download started');
+  
+    setSelectedFile('');
+    setFileContent('');
+    setShowModal(false);
   };
+  
+  
+
 const handleClose =()=>{
     setSelectedFile("");
     setFileContent("");
