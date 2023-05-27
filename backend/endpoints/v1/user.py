@@ -73,12 +73,18 @@ async def verify_login(file: UploadFile = File(...), email: str = Form(...), pas
     with open(image_path, "wb") as image_file:
         image_file.write(image_data)
 
-    face_response = recognition.recognize(image_path=image_path)
-    print(face_response)
+    face_response = recognition.recognize(image_path=image_path,  options={
+    "limit": 0,
+    "det_prob_threshold": 0.95,
+    "prediction_count": 1,
+    "face_plugins": "calculator,age,gender,landmarks",
+    "status": "true"
+})
+    print(face_response["result"][0]["subjects"])
     if details:
         if password == details['password']:
 
-            if face_response["result"][0]["subjects"][0]["subject"] == str(details["_id"]):
+            if face_response["result"][0]["subjects"][0]["subject"] == str(details["_id"]) and face_response["result"][0]["subjects"][0]["similarity"] > 0.95:
                 logged_user_id = str(details["_id"])+"+"+details["dob"]
                 
                 with open('E:/manjunathcode/capstone/backend/endpoints/v1/signature_data.txt', 'wb') as f:
