@@ -39,6 +39,14 @@ function SignUp() {
   };
 
   const handleSubmit = async event => {
+    if(!isFormValid())
+    {
+
+     alert("Password is not matching the requirements")
+     return ; 
+    
+    }
+    
     event.preventDefault();
 
     const formdata = new FormData();
@@ -73,6 +81,30 @@ function SignUp() {
     }
   };
 
+  const isPasswordValid = password => {
+    // Minimum length: 8 characters
+    // Must include at least one special character and one capital letter
+    const passwordRegex = /^(?=.*[!@#$%^&*])(?=.*[A-Z]).{8,}$/;
+    return passwordRegex.test(password);
+  };
+
+  const isFormValid = () => {
+    const { name, email, password, dob } = formData;
+
+    // Check if all required fields are filled
+    if (!name || !email || !password || !dob) {
+      return false;
+    }
+
+    // Check if password meets the requirements
+    if (!isPasswordValid(password)) {
+      
+      return false;
+    }
+
+    return true;
+  };
+
   return (
     <>
       <NavBarOutSide />
@@ -82,11 +114,25 @@ function SignUp() {
             <h2 className="text-center mb-3">Sign Up</h2>
             <div className="form-group mb-2">
               <label>Name:</label>
-              <input type="text" name="name" className="form-control" value={formData.name} onChange={handleChange} />
+              <input
+                type="text"
+                name="name"
+                className="form-control"
+                value={formData.name}
+                onChange={handleChange}
+                required
+              />
             </div>
             <div className="form-group mb-2">
               <label>Email:</label>
-              <input type="email" name="email" className="form-control" value={formData.email} onChange={handleChange} />
+              <input
+                type="email"
+                name="email"
+                className="form-control"
+                value={formData.email}
+                onChange={handleChange}
+                required
+              />
             </div>
             <div className="form-group mb-2">
               <label>Password:</label>
@@ -96,6 +142,10 @@ function SignUp() {
                 className="form-control"
                 value={formData.password}
                 onChange={handleChange}
+                minLength={8}
+                pattern="(?=.*[!@#$%^&*])(?=.*[A-Z]).{8,}"
+                title="Password must be at least 8 characters long and include at least one special character and one capital letter"
+                required
               />
             </div>
             <div className="form-group mb-3">
@@ -106,23 +156,27 @@ function SignUp() {
                 className="form-control"
                 value={formData.dob}
                 onChange={handleChange}
+                required
               />
             </div>
-
+  
             <div>
-              <h5>Image Uploader</h5>
+              <text>Image Uploader</text>
               <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-              {showCamera && <Webcam audio={false} ref={webcamRef} screenshotFormat="image/jpeg" />}
-              {showCamera && <button onClick={handleCapture} className="btn btn-primary">Capture Image</button>}
-              {!showCamera && <button onClick={handleOpenCamera} className="btn btn-primary">Open Camera</button>}
-            </div></div>
+                {showCamera && <Webcam audio={false} ref={webcamRef} screenshotFormat="image/jpeg" />}
+                {showCamera && <button onClick={handleCapture} className="btn btn-primary">Capture Image</button>}
+                {!showCamera && <button onClick={handleOpenCamera} className="btn btn-primary">Open Camera</button>}
+              </div>
+            </div>
             {uploadedImage && (
               <div>
                 <h5>captured Image</h5>
                 <img src={uploadedImage} alt="Uploaded" />
               </div>
             )}
-            <button type="submit" className="btn btn-primary" style={{ marginTop: '10px'}}>Sign Up</button>
+            <button type="submit" className="btn btn-primary" style={{ marginTop: '10px'}} >
+              Sign Up
+            </button>
             <div className="text-center mt-3">
               Already have an account? <Link to="/">Login</Link>
             </div>
@@ -131,6 +185,6 @@ function SignUp() {
       </div>
     </>
   );
-}
+            }  
 
 export default SignUp;

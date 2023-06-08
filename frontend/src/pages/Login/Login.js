@@ -64,13 +64,17 @@ function Login() {
                     },
                 }
             ).then((res) => {
-                if (res.data.status === true) {
+                if (res.data.status === "success") {
                     alert("Logged in successfully")
                     sessionStorage.setItem("name", res.data.name)
                     sessionStorage.setItem("email", res.data.email)
                     navigate('/file')
-                } else {
-                    alert("invalid content");
+                } else if(res.data.status === "email"){
+                    alert("Invalid email");
+                }else if(res.data.status === "password"){
+                    alert("Invalid password");
+                }else if(res.data.status === "face"){
+                    alert("Face not matching");
                 }
 
             });

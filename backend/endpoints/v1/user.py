@@ -62,7 +62,8 @@ async def get_all_users():
 async def verify_login(file: UploadFile = File(...), email: str = Form(...), password: str = Form(...)):
 
     details = await fetch_one_userdata(email)
-
+    if not details:
+        return {"status": "email"}
     # face authentication
     # Read the uploaded image
     image_data = await file.read()
@@ -90,11 +91,11 @@ async def verify_login(file: UploadFile = File(...), email: str = Form(...), pas
                 with open('E:/manjunathcode/capstone/backend/endpoints/v1/signature_data.txt', 'wb') as f:
                     f.write(logged_user_id.encode("utf-8"))
 
-                return {"email": details['email'], "status": True, "name": details['name']}
+                return {"email": details['email'], "status": "success", "name": details['name']}
             else:
-                return {"error": "face not matching"}
+                return {"status": "face"}
         else:
-            return {"status": False}
+            return {"status": "password"}
 
 # @router.post("/login")
 # async def verify_login(request: Request):

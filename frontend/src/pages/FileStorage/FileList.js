@@ -109,7 +109,7 @@ const handleClose =()=>{
         <>
           <Navbar />
           <div>
-            <h1>File List:</h1>
+            <h2>File List</h2>
   
             <Row style={{ margin: '30px' }}>
               {files.map((file, index) => (

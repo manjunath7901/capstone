@@ -7,9 +7,15 @@ import "./UploadFile.css"; // Import custom CSS file
 import { useNavigate } from "react-router-dom";
 import Navbar from "../NavBar/NavBar";
 
+
+import { Box, PageHeader } from "grommet";
+
 const UploadFile = () => {
     let navigate = useNavigate();
     const user = sessionStorage.getItem("email") !== null;
+
+    let email=sessionStorage.getItem("email");
+    let user_name=sessionStorage.getItem("name")
 
     useEffect(() => {
         if (!user) {
@@ -66,7 +72,16 @@ const UploadFile = () => {
         user &&
         <>
             <Navbar />
+     
+            <h3 style={{ textAlign: "left", margin: "20px 0 50px 10px" }}>{`Hello, ${user_name}!`}</h3>
+
+
+
+           
+
+            
             <Container>
+                
                 <Row style={{ marginTop: "50px" }}>
                     <Col>
                         <Dropzone onDrop={onFileSelect} accept=".txt">
@@ -79,7 +94,9 @@ const UploadFile = () => {
                         </Dropzone>
                     </Col>
                 </Row>
+                
                 <Row style={{ marginTop: "100px" }}>
+                <h5>Select the users to give the file access</h5>
                     <Col>
                         <SelectUsers
 
@@ -89,8 +106,11 @@ const UploadFile = () => {
                         />
                     </Col>
                 </Row>
+               
                 <Row>
+               
                     <Col>
+                   
                         <Button
                             style={{ margin: "30px" }}
                             variant="primary"

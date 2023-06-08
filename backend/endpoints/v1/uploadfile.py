@@ -133,6 +133,7 @@ async def upload_file(file: UploadFile = File(...), authorized_users: str = Form
     encrypted_content = base64.b64encode(encrypted_content).decode('utf-8')  # Encode bytes to Base64
     authorized_users_array = json.loads(authorized_users)  # Parse the JSON string to a list
 
+    #
     url = "http://23.21.228.145:80/upload"
     with open("E:/manjunathcode/capstone/backend/endpoints/v1/signature_data.txt", "rb") as f:
         logged_user_id = f.read()
